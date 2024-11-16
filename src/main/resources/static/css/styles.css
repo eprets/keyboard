@@ -1,0 +1,30 @@
+/* styles.css */
+#virtual-keyboard {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+.key {
+    padding: 10px;
+    margin: 5px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+#timer {
+    margin-top: 20px;
+}
+
+#error-count {
+    margin-top: 10px;
+}
+
+#input-container input {
+    font-size: 18px;
+    padding: 10px;
+    width: 100%;
+    margin-top: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}

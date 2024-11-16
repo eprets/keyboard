@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Личный кабинет</title>
+</head>
+<body>
+<h1>Личный кабинет</h1>
+<div>
+    <p>Логин: <span th:text="${username}"></span></p>
+    <p>Электронная почта: <span th:text="${email}"></span></p>
+    <p>Прогресс: <span th:text="${progress}"></span></p>
+</div>
+<div>
+    <button onclick="location.href='/logout'">Выйти</button>
+</div>
+</body>
+</html>

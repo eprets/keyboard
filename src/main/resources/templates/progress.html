@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Progress</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+<h1>Your Progress</h1>
+
+<!-- Отображаем список прогресса -->
+<table>
+    <thead>
+    <tr>
+        <th>Exercise</th>
+        <th>Accuracy</th>
+        <th>Speed</th>
+        <th>Errors</th>
+        <th>Completion Time</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="progress : ${progressList}">
+        <td th:text="${progress.exercise.name}"></td>
+        <td th:text="${progress.accuracy}"></td>
+        <td th:text="${progress.speed}"></td>
+        <td th:text="${progress.errorsCount}"></td>
+        <td th:text="${#dates.format(progress.completionTime, 'yyyy-MM-dd HH:mm')}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<div>
+    <button onclick="location.href='/home'">Go to Home</button>
+</div>
+
+</body>
+</html>

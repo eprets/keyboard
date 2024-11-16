@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тренировка</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #training-container {
+            width: 600px;
+            text-align: center;
+        }
+
+        #exercise-container {
+            margin-bottom: 20px;
+            font-size: 20px;
+            color: #333;
+        }
+
+        #virtual-keyboard {
+            display: block;
+            margin-top: 20px;
+            background: #ccc;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .key-row {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 5px;
+        }
+
+        .key {
+            width: 40px;
+            height: 40px;
+            margin: 3px;
+            font-size: 18px;
+            text-align: center;
+            line-height: 40px;
+            background: #fff;
+            border: 1px solid #bbb;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            transition: background 0.1s;
+        }
+
+        .key:active, .key.pressed {
+            background-color: #ddd;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .key[data-key=" "] {
+            width: 160px; /* Увеличенный размер пробела */
+        }
+
+        .key[data-key="shift"], .key[data-key="capslock"] {
+            width: 70px;
+        }
+
+        .key[data-key="enter"] {
+            width: 90px;
+        }
+
+        #input-container {
+            margin-top: 20px;
+        }
+
+        #user-input {
+            width: 100%;
+            padding: 10px;
+            font-size: 18px;
+        }
+
+        #error-count, #timer {
+            margin-top: 15px;
+        }
+
+        #results {
+            display: none;
+            margin-top: 20px;
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+<div id="training-container">
+    <h2>Тренировка печати</h2>
+
+    <!-- Блок для задания -->
+    <div id="exercise-container">
+        <p id="exercise-text" th:text="${exercise.text}"></p> <!-- Используем Thymeleaf для вывода текста -->
+        <p>Категория: <span th:text="${category.name}"></span></p>
+        <p>Тип: <span th:text="${type.name}"></span></p>
+        <p>Уровень: <span th:text="${level.name}"></span></p>
+    </div>
+
+    <div id="input-container">
+        <input type="text" id="user-input" placeholder="Начни печатать..." autocomplete="off" />
+    </div>
+
+    <div id="virtual-keyboard">
+        <!-- Верхний ряд: от Q до P -->
+        <div class="key-row">
+            <button class="key" data-key="q">Q</button>
+            <button class="key" data-key="w">W</button>
+            <button class="key" data-key="e">E</button>
+            <button class="key" data-key="r">R</button>
+            <button class="key" data-key="t">T</button>
+            <button class="key" data-key="y">Y</button>
+            <button class="key" data-key="u">U</button>
+            <button class="key" data-key="i">I</button>
+            <button class="key" data-key="o">O</button>
+            <button class="key" data-key="p">P</button>
+        </div>
+
+        <!-- Второй ряд: от A до L -->
+        <div class="key-row">
+            <button class="key" data-key="a">A</button>
+            <button class="key" data-key="s">S</button>
+            <button class="key" data-key="d">D</button>
+            <button class="key" data-key="f">F</button>
+            <button class="key" data-key="g">G</button>
+            <button class="key" data-key="h">H</button>
+            <button class="key" data-key="j">J</button>
+            <button class="key" data-key="k">K</button>
+            <button class="key" data-key="l">L</button>
+        </div>
+
+        <!-- Третий ряд: от Z до M -->
+        <div class="key-row">
+            <button class="key" data-key="z">Z</button>
+            <button class="key" data-key="x">X</button>
+            <button class="key" data-key="c">C</button>
+            <button class="key" data-key="v">V</button>
+            <button class="key" data-key="b">B</button>
+            <button class="key" data-key="n">N</button>
+            <button class="key" data-key="m">M</button>
+        </div>
+
+        <!-- Ряд с пробелом, shift, enter -->
+        <div class="key-row">
+            <button class="key" data-key="shift">Shift</button>
+            <button class="key" data-key=" ">Пробел</button>
+            <button class="key" data-key="enter">Enter</button>
+        </div>
+    </div>
+
+    <div id="error-count">
+        <p>Ошибок: <span id="error-number">0</span></p>
+    </div>
+
+    <div id="timer">
+        <p>Осталось времени: <span id="time-left">60</span> секунд</p>
+    </div>
+
+    <div id="results">
+        <h3>Результаты:</h3>
+        <p>Задание: <span th:text="${exercise.text}"></span></p>
+        <p>Тип: <span th:text="${type.name}"></span></p>
+        <p>Категория: <span th:text="${category.name}"></span></p>
+        <p>Уровень задания: <span th:text="${level.name}"></span></p>
+        <p>Ошибок: <span id="result-errors">0</span></p>
+        <p>Затраченное время: <span id="result-time">60</span> секунд</p>
+    </div>
+</div>
+
+<!-- Кнопки после успешного входа -->
+<div>
+    <button onclick="location.href='/personal-cabinet'">Личный кабинет</button>
+    <button onclick="location.href='/progress'">View Progress</button>
+</div>
+
+<!-- Кнопка выхода -->
+<div>
+    <button onclick="location.href='/home'">Выйти</button>
+</div>
+
+
+<script>
+    $(document).ready(function() {
+
+        let exerciseText = $('#exercise-text').data('text');
+        let exerciseCategory = $('#exercise.category').data('category');
+        let exerciseType = $('#exercise.type').data('type');
+        let exerciseLevel = $('#exercise.level').data('level');
+
+
+        let errors = 0;
+        let timeLeft = 60;
+        let timerInterval;
+        let startTime;
+
+        // Устанавливаем текст упражнения
+        $('#exercise-text').text(exerciseText).show();
+        $('#result-task').text(exerciseText).show();
+        $('#result-type').text(exerciseType).show();
+        $('#result-category').text(exerciseCategory).show();
+        $('#result-level').text(exerciseLevel).show();
+
+
+        // Запуск таймера
+        startTime = Date.now();
+        timerInterval = setInterval(function() {
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                stopTimer();
+            } else {
+                $("#time-left").text(timeLeft);
+                timeLeft--;
+            }
+        }, 1000);
+
+        // Проверка на введенные символы и подсчет ошибок
+        $('#user-input').on('input', function() {
+            let inputText = $(this).val();
+            let correctText = $('#exercise-text').text();
+
+            if (inputText !== correctText.substring(0, inputText.length)) {
+                errors++;
+                $('#error-number').text(errors);
+                $(this).val(inputText.slice(0, -1)); // Убираем последний символ в случае ошибки
+            }
+
+            if (inputText === correctText) {
+                stopTimer();
+            }
+        });
+
+        // Обработчик для нажатия на физическую клавишу
+        $(document).on('keydown', function(event) {
+            let key = event.key.toLowerCase(); // Получаем символ с физической клавиатуры и приводим к нижнему регистру
+            let keyElement = $(`.key[data-key="${key}"]`);
+
+            // Если есть такая клавиша на виртуальной клавиатуре, подсвечиваем ее
+            if (keyElement.length > 0) {
+                keyElement.addClass('pressed');
+            }
+
+            // Проверяем, если текущий символ на клавиатуре соответствует символу в тексте
+            if (key === correctText.charAt(currentInput.length)) {
+                $('#user-input').val(currentInput + key); // Добавляем символ в поле ввода
+            } else {
+                errors++; // Увеличиваем счетчик ошибок
+                $('#error-number').text(errors); // Обновляем счетчик ошибок
+            }
+
+            // Если весь текст введен
+            if ($('#user-input').val() === correctText) {
+                stopTimer();
+            }
+        });
+
+        // Убираем подсветку клавиши после того как она отпущена
+        $(document).on('keyup', function(event) {
+            let key = event.key.toLowerCase(); // Получаем символ с физической клавиатуры
+            $(`.key[data-key="${key}"]`).removeClass('pressed');
+        });
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+            const totalTime = 60 - timeLeft;
+
+            // Обновляем текст результатов
+            $('#result-task').text(exerciseText);
+            $('#result-type').text(exerciseType);
+            $('#result-category').text(exerciseCategory);
+            $('#result-level').text(exerciseLevel);
+            $('#result-errors').text(errors);
+            $('#result-time').text(totalTime);
+            $('#results').show();
+
+            // Отправка результатов
+            sendResults(userId, exerciseId, errors, totalTime);
+        }
+
+        function sendResults(userId, exerciseId, errorsCount, totalTime) {
+            const correctChars = $('#user-input').val().length - errorsCount;
+            const totalChars = $('#exercise-text').text().length;
+            const accuracy = ((correctChars / totalChars) * 100).toFixed(2);
+            const speed = (correctChars / totalTime * 60).toFixed(2);
+
+            const data = {
+                userId: userId,
+                exerciseId: exerciseId,
+                accuracy: parseFloat(accuracy),
+                speed: parseFloat(speed),
+                errorsCount: errorsCount,
+                completionTime: totalTime
+            };
+
+            fetch('/check-answer', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error('Failed to save progress');
+                    return response.text();
+                })
+                .then(result => {
+                    console.log('Progress saved:', result);
+                })
+                .catch(error => {
+                    console.error('Error saving progress:', error);
+                });
+        }
+
+
+
+    });
+
+</script>
+
+</body>
+</html>

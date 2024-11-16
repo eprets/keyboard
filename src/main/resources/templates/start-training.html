@@ -1,0 +1,46 @@
+<!-- start-training.html -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Start Training</title>
+</head>
+<body>
+<h2>Выберите параметры тренировки</h2>
+<form action="/start-training" method="POST">
+  <label for="level">Уровень:</label>
+  <select name="level" id="level">
+    <option value="1">Легкий</option>
+    <option value="2">Средний</option>
+    <option value="3">Сложный</option>
+  </select>
+
+  <label for="category">Категория:</label>
+  <select name="category" id="category">
+    <option value="1">Печать текста</option>
+    <option value="2">Упражнения на скорость</option>
+  </select>
+
+  <label for="type">Тип:</label>
+  <select name="type" id="type">
+    <option value="1">Скорость</option>
+    <option value="2">Точность</option>
+    <option value="3">Комбо</option>
+  </select>
+
+  <button type="submit">Начать тренировку</button>
+</form>
+
+
+<div>
+  <div th:if="${not #lists.isEmpty(error)}">
+    <p style="color:red;" th:text="${error}"></p>
+  </div>
+
+  <div th:if="${not #lists.isEmpty(message)}">
+    <p style="color:green;" th:text="${message}"></p>
+  </div>
+</div>
+
+</body>
+</html>

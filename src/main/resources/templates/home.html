@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Главная страница</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+<h1>Добро пожаловать, <span th:text="${username}">Username</span>!</h1>
+
+<!-- Кнопки после успешного входа -->
+<div>
+    <button onclick="location.href='/personal-cabinet'">Личный кабинет</button>
+    <button onclick="location.href='/start-training'">Start Training</button>
+    <button onclick="location.href='/progress'">View Progress</button>
+</div>
+
+<!-- Кнопка выхода -->
+<div>
+    <button onclick="location.href='/logout'">Выйти</button>
+</div>
+
+</body>
+</html>
