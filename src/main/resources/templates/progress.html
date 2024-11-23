@@ -1,40 +1,26 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Progress</title>
-    <link rel="stylesheet" href="/css/styles.css">
+    <title>View Progress</title>
 </head>
 <body>
 <h1>Your Progress</h1>
-
-<!-- Отображаем список прогресса -->
 <table>
     <thead>
     <tr>
-        <th>Exercise</th>
-        <th>Accuracy</th>
-        <th>Speed</th>
-        <th>Errors</th>
-        <th>Completion Time</th>
+        <th>Exercise Name</th>
+        <th>Score</th>
+        <th>Date</th>
     </tr>
     </thead>
     <tbody>
-    <!-- Здесь выводим данные из progressList -->
-    <tr th:each="progress : ${progressList}">
-        <td th:text="${progress.exercise.name}"></td>  <!-- Пример: вывод названия упражнения -->
-        <td th:text="${progress.accuracy}"></td>
-        <td th:text="${progress.speed}"></td>
-        <td th:text="${progress.errors}"></td>
-        <td th:text="${#dates.format(progress.date, 'yyyy-MM-dd HH:mm')}"></td> <!-- Отображаем дату -->
+    <tr th:each="result : ${results}">
+        <td th:text="${result.exerciseName}">Exercise Name</td>
+        <td th:text="${result.score}">Score</td>
+        <td th:text="${result.date}">Date</td>
     </tr>
     </tbody>
 </table>
-
-<div>
-    <button onclick="location.href='/home'">Go to Home</button>
-</div>
-
 </body>
 </html>

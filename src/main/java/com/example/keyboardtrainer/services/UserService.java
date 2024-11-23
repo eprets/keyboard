@@ -47,4 +47,8 @@ public class UserService {
         // Здесь можно интегрировать логику с вашей базой данных или другой системой
         return "50% завершено";
     }
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+
 }
