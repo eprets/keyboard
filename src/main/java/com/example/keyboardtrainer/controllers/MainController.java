@@ -5,7 +5,6 @@ import com.example.keyboardtrainer.services.UserService;
 import com.example.keyboardtrainer.services.TrainingService;
 import com.example.keyboardtrainer.repositories.UserRepository;
 import com.example.keyboardtrainer.repositories.LevelRepository;
-import com.example.keyboardtrainer.repositories.ProgressRepository;
 import com.example.keyboardtrainer.repositories.ExerciseCategoryRepository;
 import com.example.keyboardtrainer.repositories.ExerciseTypeRepository;
 import com.example.keyboardtrainer.repositories.ExerciseRepository;
@@ -46,9 +45,6 @@ public class MainController {
 
     @Autowired
     private LevelRepository levelRepository;
-
-    @Autowired
-    private ProgressRepository progressRepository;
 
 
     // Главная страница
@@ -214,29 +210,7 @@ public class MainController {
         if (userInput.trim().equalsIgnoreCase(exercise.getCorrectAnswer())) {
             model.addAttribute("message", "Ответ правильный!");
 
-            // Получаем или создаем запись прогресса для пользователя
-            Progress progress = progressRepository.findByUserIdAndExerciseId(user.getId(), exerciseId)
-                    .orElse(new Progress());  // Если записи нет, создаем новую
 
-            // Обновляем прогресс
-            progress.setUserId(user.getId());
-            progress.setExerciseId(exercise.getId());
-            progress.setCategoryId(exercise.getCategory().getId());
-            progress.setTypeId(exercise.getType().getId());
-            progress.setLevelId(exercise.getLevel().getId());
-
-            // Средняя точность и скорость
-            progress.setAccuracy((progress.getAccuracy() + accuracy) / 2);
-            progress.setSpeed((progress.getSpeed() + speed) / 2);
-
-            // Считаем ошибки
-            progress.setErrors(progress.getErrors() + (userInput.length() != exercise.getCorrectAnswer().length() ? 1 : 0));
-
-            // Время тренировки в миллисекундах
-            progress.setCompletionTime((int) (System.currentTimeMillis() / 1000)); // Время в секундах
-
-            // Сохраняем или обновляем прогресс в базе
-            progressRepository.save(progress);
         } else {
             model.addAttribute("message", "Ответ неправильный, попробуйте снова.");
         }
@@ -254,19 +228,6 @@ public class MainController {
         if (user == null) {
             return "redirect:/login";  // Если пользователь не авторизован, перенаправляем на страницу входа
         }
-
-        List<Progress> progressList;
-        if (exerciseId != null) {
-            // Получаем прогресс для конкретного упражнения
-            Optional<Progress> progress = progressRepository.findByUserIdAndExerciseId(user.getId(), exerciseId);
-            progressList = progress.map(List::of).orElseGet(List::of); // Если прогресс найден, возвращаем его в списке
-        } else {
-            // Получаем прогресс по всем упражнениям для пользователя
-            progressList = progressRepository.findByUserId(user.getId());
-        }
-
-        // Добавляем данные о прогрессе в модель
-        model.addAttribute("progressList", progressList);
 
         return "progress";  // Отображаем страницу прогресса
     }

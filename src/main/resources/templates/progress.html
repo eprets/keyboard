@@ -21,12 +21,13 @@
     </tr>
     </thead>
     <tbody>
+    <!-- Здесь выводим данные из progressList -->
     <tr th:each="progress : ${progressList}">
-        <td th:text="${progress.exercise.name}"></td>
+        <td th:text="${progress.exercise.name}"></td>  <!-- Пример: вывод названия упражнения -->
         <td th:text="${progress.accuracy}"></td>
         <td th:text="${progress.speed}"></td>
-        <td th:text="${progress.errorsCount}"></td>
-        <td th:text="${#dates.format(progress.completionTime, 'yyyy-MM-dd HH:mm')}"></td>
+        <td th:text="${progress.errors}"></td>
+        <td th:text="${#dates.format(progress.date, 'yyyy-MM-dd HH:mm')}"></td> <!-- Отображаем дату -->
     </tr>
     </tbody>
 </table>
