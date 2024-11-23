@@ -211,18 +211,32 @@ public class MainController {
             return "trainer";
         }
 
+        // Создаем объект Result для сохранения
+        Result result = new Result();
+        result.setUser(user);
+        result.setExerciseName(exercise.getName());
+        result.setDate(LocalDateTime.now());
 
         // Проверяем ответ
         if (userInput.trim().equalsIgnoreCase(exercise.getCorrectAnswer())) {
             model.addAttribute("message", "Ответ правильный!");
 
-
+            // Устанавливаем результат как успешный (например, используя скорость как очки)
+            result.setScore(speed);
         } else {
             model.addAttribute("message", "Ответ неправильный, попробуйте снова.");
+
+            // Устанавливаем результат с минимальным количеством очков
+            result.setScore(0); // Или логика для штрафа
         }
 
+        // Сохраняем результат в базу данных
+        resultService.saveResult(result);
+
+        // Возвращаем страницу тренировки
         return "trainer";
     }
+
 
 
     // Страница прогресса пользователя
